@@ -1,0 +1,82 @@
+module Device {
+
+    yang-version 1;
+
+    namespace "urn:telekom:tr181:device:2";
+
+    prefix "Device";
+
+    import Device.DeviceInfo {prefix DevInf;}
+    include Device.RPC.CPE;
+    include Device.RPC.ACS;
+    include Device.RPC;
+
+    organization "Deutsche Telekom AG";
+
+    contact 
+        'Web:   <http://opencpe.org/contact>
+Email: OpenCPE Support
+       <mailto:support@opencpe.org>';
+
+    description
+        'Copyright (c) 2013 Deutsche Telekom AG
+
+This module is the main container including modules of the Device:2 Datamodel for TR-069/WT-181.
+';
+
+    revision "2013-09-22" {
+        description "Version 0.1.0 -- Initial release";
+    }
+
+    container Device {
+
+        leaf InterfaceStackNumberOfEntries {
+            type uint32;
+            config false;
+            default 0;
+            description "The number of entries in the InterfaceStack  table.";
+        }
+
+        leaf UserNumberOfEntries {
+            type uint32;
+            config false;
+            default 0;
+            description "Number of entries in the User table.";
+        }
+
+        leaf SmartCardReaderNumberOfEntries {
+            type uint32;
+            config false;
+            default 0;
+            description "Number of entries in the SmartCardReader table.";
+        }
+
+        // import DeviceInfo
+        uses DevInf:DeviceInfo;
+
+        // import RPC method definitions
+        // RPC is included, so no "uses"
+        //   uses RPC:RPC;
+
+        // extension statements
+
+        // feature statements
+
+        // identity statements
+
+        // typedef statements
+
+        // grouping statements
+
+        // data definition statements
+
+        // augment statements
+
+        // rpc statements
+
+        // notification statements
+
+        // DO NOT put deviation statements in a published module
+
+    } // container UCM.Device
+} // module Device

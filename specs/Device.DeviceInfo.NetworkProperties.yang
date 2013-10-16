@@ -1,0 +1,66 @@
+submodule Device.DeviceInfo.NetworkProperties {
+
+    belongs-to "Device.DeviceInfo" {prefix DeviceInfo;}
+
+    yang-version 1;
+
+    organization "Deutsche Telekom AG";
+
+    contact 
+        'Web:   <http://opencpe.org/contact>
+Email: OpenCPE Support
+       <mailto:support@opencpe.org>';
+
+    description
+        'Copyright (c) 2013 Deutsche Telekom AG
+
+This module is the DeviceInfo.NetworkProperties branch of the Device:2 Datamodel for TR-069/WT-181.
+';
+
+    revision "2013-09-22" {
+        description "Version 0.1.0 -- Initial release";
+    }
+
+    grouping NetworkProperties {
+        container NetworkProperties {
+            config false;
+            description "This object defines the parameters that describe
+                how the device handles network traffic.";
+
+            leaf MaxTCPWindowSize {
+                type uint32;
+                config false;
+                description "The maximum number of bytes of outstanding data a
+                    sender can send on a particular connection prior to an acknowledgment
+                    [RFC793]. Any scaling factor SHOULD be included in this parameter
+                    [RFC1323].";
+                reference "RFC793, RFC1323";
+            }
+
+            leaf-list TCPImplementation {
+                // defined as string in WT-181i2
+                // each leaf-list item can have one of the following values
+                // but each value can only appear once
+                type enumeration {
+                    enum Tahoe;
+                    enum Reno;
+                    enum "New Reno";
+                    enum Vegas;
+                }
+                config false;
+                description "Indicates the TCP congestion control mechanism(s)
+                    implemented. Each list item is an enumeration of:
+                    * Tahoe (represents the base TCP implementation in [RFC793] and
+                            elements of [RFC2582])
+                    * Reno (represents the base TCP implementation in [RFC793] with the
+                            additional algorithms defined in [RFC2581])
+                    * New Reno (described as a modification to the Reno algorithms in
+                            [RFC2582])
+                    * Vegas (an emerging TCP congestion control mechanism)
+                    Tahoe, Reno, and New Reno are defined in [RFC2582]";
+                reference "RFC793, RFC2582, RFC2581";
+            }
+
+        } // container NetworkProperties
+    } // grouping NetworkProperties
+} // module
