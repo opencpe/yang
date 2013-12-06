@@ -1,7 +1,13 @@
-opencpe
-=======
+homegateway
+===========
 
-Collection of project documentation and Yang specs for OpenCPE.
+Collection of project documentation and Yang specs for homegateway.
+
+Version 0.1.0 - 04 Dec 2013
+---------------------------
+
+* project renamed to homegateway
+* models converted to use IETF models instead of TR-069
 
 Version 0.1.0 - 27 Sep 2013
 ---------------------------

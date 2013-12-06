@@ -1,0 +1,128 @@
+module homegateway {
+
+ namespace "urn:homegateway";
+
+ prefix "hg";
+
+ // import statements here: e.g.,
+
+ import ietf-system {
+  prefix "sys";
+  revision-date 2013-11-07;
+ }
+
+ import ietf-interfaces {
+  prefix "if";
+  revision-date 2013-07-04;
+ }
+
+ import ietf-ip {
+  prefix "ip";
+  revision-date 2013-10-18;
+ }
+
+ organization
+ "Travelping GmbH";
+
+ contact
+  "Röntgenstraße 13
+  39108 Magdeburg
+  Editor: Helge Sychla <hs@travelping.com>";
+
+ description
+  "This module defines a home gateway for the TeraStream project.";
+
+ revision "2013-12-03" {
+   description
+     "Version 0.1.0 -- Initial version with IETF data models";
+ }
+
+ // deviate statements
+
+ deviation /sys:system/sys:clock/sys:timezone {
+   deviate not-supported;
+ }
+ 
+ deviation /sys:system/sys:ntp/sys:server/sys:transport/sys:udp/sys:udp/sys:port {
+   deviate not-supported;
+ }
+
+ deviation /sys:system/sys:ntp/sys:server/sys:association-type {
+   deviate not-supported;
+ }
+
+ deviation /sys:system/sys:ntp/sys:server/sys:iburst {
+   deviate not-supported;
+ }
+
+ deviation /sys:system/sys:ntp/sys:server/sys:prefer {
+   deviate not-supported;
+ }
+
+ deviation /sys:system/sys:dns-resolver/sys:server/sys:transport/sys:udp-and-tcp/sys:udp-and-tcp/sys:port {
+   deviate not-supported;
+ }
+
+ deviation /sys:system/sys:radius {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces/if:interface/if:link-up-down-trap-enable {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces-state/if:interface/if:higher-layer-if {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces-state/if:interface/if:lower-layer-if {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces/if:interface/ip:ipv4/ip:neighbor {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces/if:interface/ip:ipv6/ip:neighbor {
+   deviate not-supported;
+ }
+
+ deviation /if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state {
+   deviate not-supported;
+ }
+
+
+ // feature statements
+
+ // identity statements
+
+ // typedef statements
+
+ // grouping statements
+
+ // data definition statements
+
+ // augment statements
+
+ augment "/sys:system" {
+   leaf serial-number {
+     type string;
+     description
+       "Serial Number of the device";
+   }
+ }
+
+ augment "/sys:system-state/sys:platform" {
+   leaf serial-number {
+     type string;
+     description
+       "Serial Number of the device";
+   }
+ }
+
+ // rpc statements
+
+ // notification statements
+
+ // DO NOT put deviation statements in a published module
+}

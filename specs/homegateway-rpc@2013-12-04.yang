@@ -1,0 +1,143 @@
+module homegateway-rpc {
+
+    namespace "urn:homegateway:rpc";
+
+    prefix "hgr";
+
+    // import statements here: e.g.,
+
+    import ietf-inet-types {
+        prefix "inet";
+        revision-date 2013-07-15;
+    }
+
+    organization
+        "Travelping GmbH";
+
+    contact
+        "Röntgenstraße 13
+        39108 Magdeburg
+        Editor: Helge Sychla <hs@travelping.com>";
+
+    description
+        "This module defines RPCs for the TeraStream home gateway project.";
+
+    revision "2013-12-04" {
+        description
+            "Version 0.1.0 -- Initial version.";
+    }
+
+    // feature statements
+
+    // identity statements
+
+    // typedef statements
+
+    // grouping statements
+
+    grouping fw-status {
+        leaf status {
+            type enumeration {
+                enum planned;
+                enum in-progress;
+                enum done;
+            }
+        }
+        leaf percent {
+            when "hgr:status = 'in-progress'";
+            type int32 {
+                range "0..100";
+            }
+        }
+    }
+
+
+    // data definition statements
+
+    // augment statements
+
+    // rpc statements
+
+    rpc system-reset {
+        description
+            "Requests the device to delete the startup configuration and perform a reboot.";
+    }
+
+    rpc firmware-download {
+        input {
+            choice transport {
+                description
+                    "Protocol used for the firmware download";
+                case ftp {
+                    container ftp {
+                        presence true;
+                        leaf address {
+                            type inet:host;
+                            mandatory true;
+                            description 
+                                "Address if the firmware update";
+                        }
+                    }
+                }
+                case http {
+                    container http {
+                        presence true;
+                        leaf address {
+                            type inet:host;
+                            description
+                                "Address if the firmware update";
+                        }
+                    }
+                }
+            }
+        }
+        output {
+            leaf fw-id {
+                type int32;
+            }
+        }
+    }
+
+    rpc firmware-commit {
+        description
+            "Install a previously donwloaded firmware.";
+        input {
+            leaf fw-id {
+                type int32;
+            }
+        }
+    }
+
+    rpc firmware-status {
+        description
+            "Status of a firmware download or commit.";
+        input {
+            leaf fw-id {
+                type int32;
+            }
+        }
+        output {
+            leaf fw-id {
+                type int32;
+            }
+            choice task {
+                case download {
+                    container download {
+                        presence true;
+                        uses fw-status;
+                    }
+                }
+                case commit {
+                    container commit {
+                        presence true;
+                        uses fw-status;
+                    }
+                }
+            }
+        }
+    }
+
+    // notification statements
+
+    // DO NOT put deviation statements in a published module
+}

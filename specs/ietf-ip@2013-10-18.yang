@@ -54,7 +54,7 @@ module ietf-ip {
     description
       "Initial revision.";
     reference
-      "RFC XXXX: A YANG Data Model for IP Management";
+      "Draft draft-ietf-netmod-ip-cfg-11";
   }
 
   /*
