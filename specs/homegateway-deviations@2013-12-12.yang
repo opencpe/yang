@@ -1,0 +1,82 @@
+module homegateway-deviations {
+
+ namespace "urn:homegateway:deviations";
+
+ prefix "hgd";
+
+ // import statements here: e.g.,
+
+ import ietf-system {
+  prefix "sys";
+  revision-date 2013-11-07;
+ }
+
+ import ietf-interfaces {
+  prefix "if";
+  revision-date 2013-07-04;
+ }
+
+ import ietf-ip {
+  prefix "ip";
+  revision-date 2013-10-18;
+ }
+
+ organization
+ "Travelping GmbH";
+
+ contact
+  "Röntgenstraße 13
+  39108 Magdeburg
+  Editor: Helge Sychla <hs@travelping.com>";
+
+ description
+  "This module defines a home gateway for the TeraStream project.";
+
+ revision "2013-12-12" {
+   description
+     "Version 0.1.0 -- Move deviations from homegateway to separate module.";
+ }
+
+ // deviate statements
+
+ // Out of Scope - Not required for HGW
+ // HGW will probably only use default NTP options
+ deviation /sys:system/sys:ntp/sys:server/sys:association-type {
+   deviate not-supported;
+ }
+
+ // Out of Scope - Not required for HGW
+ // HGW will probably only use default NTP options
+ deviation /sys:system/sys:ntp/sys:server/sys:iburst {
+   deviate not-supported;
+ }
+
+ // Out of Scope - Not required for HGW
+ // No special treatment of one server needed
+ deviation /sys:system/sys:ntp/sys:server/sys:prefer {
+   deviate not-supported;
+ }
+
+ // Out of Scope - Not required for HGW
+ deviation /if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state {
+   deviate not-supported;
+ }
+
+ // feature statements
+
+ // identity statements
+
+ // typedef statements
+
+ // grouping statements
+
+ // data definition statements
+
+ // augment statements
+
+ // rpc statements
+
+ // notification statements
+
+ // DO NOT put deviation statements in a published module
+}

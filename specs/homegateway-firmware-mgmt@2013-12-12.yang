@@ -1,8 +1,8 @@
-module homegateway-rpc {
+module homegateway-firmware-mgmt {
 
-    namespace "urn:homegateway:rpc";
+    namespace "urn:homegateway:firmware-mgmt";
 
-    prefix "hgr";
+    prefix "hg-fw-mgmt";
 
     // import statements here: e.g.,
 
@@ -22,7 +22,7 @@ module homegateway-rpc {
     description
         "This module defines RPCs for the TeraStream home gateway project.";
 
-    revision "2013-12-04" {
+    revision "2013-12-12" {
         description
             "Version 0.1.0 -- Initial version.";
     }
@@ -44,7 +44,7 @@ module homegateway-rpc {
             }
         }
         leaf percent {
-            when "hgr:status = 'in-progress'";
+            when "hg-fw-mgmt:status = 'in-progress'";
             type int32 {
                 range "0..100";
             }
@@ -92,8 +92,9 @@ module homegateway-rpc {
             }
         }
         output {
-            leaf fw-id {
+            leaf job-id {
                 type int32;
+                mandatory true;
             }
         }
     }
@@ -102,8 +103,9 @@ module homegateway-rpc {
         description
             "Install a previously donwloaded firmware.";
         input {
-            leaf fw-id {
+            leaf job-id {
                 type int32;
+                mandatory true;
             }
         }
     }
@@ -112,13 +114,15 @@ module homegateway-rpc {
         description
             "Status of a firmware download or commit.";
         input {
-            leaf fw-id {
+            leaf job-id {
                 type int32;
+                mandatory true;
             }
         }
         output {
-            leaf fw-id {
+            leaf job-id {
                 type int32;
+                mandatory true;
             }
             choice task {
                 case download {
@@ -133,6 +137,18 @@ module homegateway-rpc {
                         uses fw-status;
                     }
                 }
+            }
+        }
+    }
+
+    // This will also need a config node somewhere! 
+    rpc set-active-partition {
+        description
+            "Sets the partition that that will be active after next boot.";
+        input {
+            leaf partition-id {
+                type uint8;
+                mandatory true;
             }
         }
     }
