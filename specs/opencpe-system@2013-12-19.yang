@@ -1,0 +1,147 @@
+module opencpe-system {
+
+    namespace "urn:opencpe:system";
+
+    prefix "ocpes";
+
+    // import statements here: e.g.,
+
+    import ietf-system {
+        prefix "sys";
+        revision-date 2013-11-07;
+    }
+
+    import opencpe-firmware-mgmt {
+        prefix "ocpe-fw-mgmt";
+        revision-date 2013-12-19;
+    }
+
+    organization
+        "Travelping GmbH";
+
+    contact
+        "Röntgenstraße 13
+        39108 Magdeburg
+        Editor: Helge Sychla <hs@travelping.com>";
+
+    description
+        "This module defines a home gateway for the TeraStream project.";
+
+    revision "2013-12-19" {
+        description
+            "Version 0.1.1 
+            Rename module to opencpe-system.
+            Add list of available partitions.";
+    }
+
+    revision "2013-12-12" {
+        description
+            "Version 0.1.0 -- Move augmentations from homegateway to separate module.";
+    }
+
+    // deviate statements
+
+    // feature statements
+
+    feature multiple-partitions {
+        description
+            "Indicates that this device has more than one partition on 
+            which a firmware can be installed and selectively booted.";
+    }
+
+    // identity statements
+
+    // typedef statements
+
+    // grouping statements
+
+    grouping fw-status {
+        leaf status {
+            type enumeration {
+                enum planned;
+                enum in-progress;
+                enum done;
+            }
+        }
+        leaf percent {
+            when "ocpe-fw-mgmt:status = 'in-progress'";
+            type int32 {
+                range "0..100";
+            }
+        }
+    }
+
+
+    // data definition statements
+
+    // augment statements
+
+    augment "/sys:system-state/sys:platform" {
+        leaf serial-number {
+            type string;
+            description
+                "Serial Number of the device";
+        }
+    }
+
+    augment "/sys:system-state/sys:platform" {
+        leaf firmware-version {
+            type string;
+            description
+                "Version of the currently running firmware";
+        }
+    }
+
+    augment "/sys:system-state" {
+        list partitions {
+
+            if-feature multiple-partitions;
+            description
+                "Information about available partitions and their firmware.";
+
+            leaf name {
+                description
+                    "Name of the partition.";
+                type string;
+            }
+
+            leaf version {
+                description
+                    "Version of the firmware currently installed in this partition.";
+                type string;
+            }
+
+            container status {
+                description
+                    "The partition's firmware's status.";
+
+                leaf status {
+                    type enumeration {
+                        enum planned;
+                        enum in-progress;
+                        enum done;
+                    }
+                }
+                leaf percent {
+                    when "ocpe-fw-mgmt:status = 'in-progress'";
+                    type int32 {
+                        range "0..100";
+                    }
+                }
+            }
+
+            leaf active {
+                description
+                    "Indicates that this partition will be bootet next.";
+                type boolean;
+            }
+        }
+    }
+
+
+    // rpc statements
+
+    // notification statements
+
+    // DO NOT put deviation statements in a published module
+}

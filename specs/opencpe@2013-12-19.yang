@@ -1,8 +1,8 @@
-module homegateway {
+module opencpe {
 
- namespace "urn:homegateway";
+ namespace "urn:opencpe";
 
- prefix "hg";
+ prefix "ocpe";
 
  // import statements here: e.g.,
 
@@ -17,10 +17,16 @@ module homegateway {
  description
   "This module defines a home gateway for the TeraStream project.";
 
+ revision "2013-12-19" {
+   description
+     "Version 0.1.2 -- Rename module to opencpe.";
+ }
+
  revision "2013-12-12" {
    description
      "Version 0.1.1 -- Implementation of 0.1.0-review";
  }
+
  revision "2013-12-03" {
    description
      "Version 0.1.0 -- Initial version with IETF data models";

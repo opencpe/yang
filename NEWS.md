@@ -3,6 +3,18 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.2 - 19 Dec 2013
+---------------------------
+
+* use description statement to explain why a deviation is needed
+* /if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state should be imlemented at some point but not for the first release
+* rename homegateway to opencpe, use "ocpe" in namespaces
+* replace PRC firmware-status with a list of available partitions and the status of that partition's firmware
+* add target location to firmware download (as a feature)
+* add transports SCP and HTTPS to RPC firmware-download
+* add credentials to RPC firmware-download
+* add own modules to features.list
+
 Version 0.1.1 - 12 Dec 2013
 ---------------------------
 

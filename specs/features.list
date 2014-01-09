@@ -1,3 +1,25 @@
+opencpe-firmware-mgmt:
+=====================
+=====================
+supported
+=========
+* multiple-partitions
+
+not supported
+=============
+* --
+
+opencpe-system:
+==============
+==============
+supported
+=========
+* multiple-partitions
+
+not supported
+=============
+* --
+
 ietf-system@2013-11-07:
 ======================
 ======================

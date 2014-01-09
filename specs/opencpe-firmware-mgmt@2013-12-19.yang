@@ -1,0 +1,194 @@
+module opencpe-firmware-mgmt {
+
+    namespace "urn:opencpe:firmware-mgmt";
+
+    prefix "ocpe-fw-mgmt";
+
+    // import statements here: e.g.,
+
+    import ietf-inet-types {
+        prefix "inet";
+        revision-date 2013-07-15;
+    }
+
+    organization
+        "Travelping GmbH";
+
+    contact
+        "Röntgenstraße 13
+        39108 Magdeburg
+        Editor: Helge Sychla <hs@travelping.com>";
+
+    description
+        "This module defines RPCs for the TeraStream home gateway project.";
+
+    revision "2013-12-19" {
+        description
+            "Version 0.1.1
+            Rename module to opencpe-firmware-mgmt.
+            Add target location to download RPC.";
+    }
+
+    revision "2013-12-12" {
+        description
+            "Version 0.1.0 -- Initial version.";
+    }
+
+    // feature statements
+
+    feature multiple-partitions {
+        description
+            "Indicates that this device has more than one partition on 
+            which a firmware can be installed and selectively booted.";
+    }
+
+    // identity statements
+
+    // typedef statements
+
+    // grouping statements
+
+    grouping fw-status {
+        leaf status {
+            type enumeration {
+                enum planned;
+                enum in-progress;
+                enum done;
+            }
+        }
+        leaf percent {
+            when "ocpe-fw-mgmt:status = 'in-progress'";
+            type int32 {
+                range "0..100";
+            }
+        }
+    }
+
+
+    // data definition statements
+
+    // augment statements
+
+    // rpc statements
+
+    rpc system-reset {
+        description
+            "Requests the device to delete the startup configuration and perform a reboot.";
+    }
+
+    rpc firmware-download {
+        input {
+            choice transport {
+                description
+                    "Protocol used for the firmware download";
+                case ftp {
+                    container ftp {
+                        presence true;
+                        leaf address {
+                            type inet:uri;
+                            mandatory true;
+                            description 
+                                "Address of the firmware update";
+                        }
+                    }
+                }
+                case http {
+                    container http {
+                        presence true;
+                        leaf address {
+                            type inet:uri;
+                            description
+                                "Address of the firmware update";
+                        }
+                    }
+                }
+                case scp {
+                    container scp {
+                        presence true;
+                        leaf address {
+                            description
+                                "Hosname or IP of the download server.";
+                            type inet:uri;
+                        }
+                    }
+                }
+                case https {
+                    container https {
+                        presence true;
+                        leaf address {
+                            type inet:uri;
+                            description
+                                "Address of the firmware update";
+                        }
+                    }
+                }
+
+            }
+
+            choice credentials {
+                description
+                    "Type of authentication to use for firmware downloads.";
+
+                case user-pass {
+                    container user-pass {
+                        presence true;
+                        leaf username {
+                            type string;
+                        }
+                        leaf password {
+                            type string;
+                        }
+                    }
+                }
+                case certificate {
+                    container certificate {
+                        presence true;
+                        leaf path {
+                            type string;
+                        }
+                    }
+                }
+            }
+
+            leaf download-target {
+                if-feature multiple-partitions;
+
+                description
+                    "Partition in which the downloaded firmware will be installed.";
+                type string;
+            }
+        }
+        output {
+            leaf job-id {
+                type int32;
+                mandatory true;
+            }
+        }
+    }
+
+    rpc firmware-commit {
+        description
+            "Install a previously donwloaded firmware.";
+        input {
+            leaf job-id {
+                type int32;
+                mandatory true;
+            }
+        }
+    }
+
+    rpc set-active-partition {
+        description
+            "Sets the partition that that will be active after next boot.";
+        input {
+            leaf partition-name {
+                type string;
+                mandatory true;
+            }
+        }
+    }
+
+    // notification statements
+
+    // DO NOT put deviation statements in a published module
+}

@@ -1,8 +1,8 @@
-module homegateway-deviations {
+module opencpe-deviations {
 
- namespace "urn:homegateway:deviations";
+ namespace "urn:opencpe:deviations";
 
- prefix "hgd";
+ prefix "ocped";
 
  // import statements here: e.g.,
 
@@ -32,6 +32,13 @@ module homegateway-deviations {
  description
   "This module defines a home gateway for the TeraStream project.";
 
+ revision "2013-12-19" {
+   description
+     "Version 0.1.1
+      Rename module to opencpe-deviations.
+      State reason for deviations in description statements.";
+ }
+
  revision "2013-12-12" {
    description
      "Version 0.1.0 -- Move deviations from homegateway to separate module.";
@@ -39,26 +46,31 @@ module homegateway-deviations {
 
  // deviate statements
 
- // Out of Scope - Not required for HGW
- // HGW will probably only use default NTP options
  deviation /sys:system/sys:ntp/sys:server/sys:association-type {
+   description
+     "Out of Scope - Not required for HGW.
+      HGW will probably only use default NTP options.";
    deviate not-supported;
  }
 
- // Out of Scope - Not required for HGW
- // HGW will probably only use default NTP options
  deviation /sys:system/sys:ntp/sys:server/sys:iburst {
+   description
+     "Out of Scope - Not required for HGW.
+      HGW will probably only use default NTP options.";
    deviate not-supported;
  }
 
- // Out of Scope - Not required for HGW
- // No special treatment of one server needed
  deviation /sys:system/sys:ntp/sys:server/sys:prefer {
+   description
+     "Out of Scope - Not required for HGW.
+      No special treatment of one server needed.";
    deviate not-supported;
  }
 
- // Out of Scope - Not required for HGW
  deviation /if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state {
+   description
+     "Out of Scope - Not required for HGW.
+      This will be implemented at some point but not in the first release.";
    deviate not-supported;
  }
 
