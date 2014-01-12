@@ -11,6 +11,11 @@ module opencpe-firmware-mgmt {
         revision-date 2013-07-15;
     }
 
+    import ietf-system {
+        prefix "sys";
+        revision-date 2013-11-07;
+    }
+
     organization
         "Travelping GmbH";
 
@@ -21,6 +26,12 @@ module opencpe-firmware-mgmt {
 
     description
         "This module defines RPCs for the TeraStream home gateway project.";
+
+    revision "2014-01-09" {
+        description
+            "Version 0.1.2
+            Rename feature multiple-partitions to firmware-slots.";
+    }
 
     revision "2013-12-19" {
         description
@@ -36,10 +47,10 @@ module opencpe-firmware-mgmt {
 
     // feature statements
 
-    feature multiple-partitions {
+    feature firmware-slots {
         description
-            "Indicates that this device has more than one partition on 
-            which a firmware can be installed and selectively booted.";
+            "Indicates that this device can store more than one firmware version 
+            which can be selectively booted.";
     }
 
     // identity statements
@@ -68,6 +79,66 @@ module opencpe-firmware-mgmt {
     // data definition statements
 
     // augment statements
+
+    augment "/sys:system-state/sys:platform" {
+        leaf firmware-version {
+            type string;
+            description
+                "Version of the currently running firmware";
+        }
+    }
+
+    augment "/sys:system-state" {
+        list firmware-slots {
+
+            if-feature firmware-slots;
+            description
+                "Information about available firmware-slots and their firmware.";
+
+            leaf name {
+                description
+                    "Name of the slot.";
+                type string;
+            }
+
+            leaf version {
+                description
+                    "Version of the firmware currently installed in this firmware-slot.";
+                type string;
+            }
+
+            container status {
+                description
+                    "The firmware-slots's firmware's status.";
+
+                leaf status {
+                    type enumeration {
+                        enum planned;
+                        enum in-progress;
+                        enum done;
+                    }
+                }
+                leaf percent {
+                    when "ocpe-fw-mgmt:status = 'in-progress'";
+                    type int32 {
+                        range "0..100";
+                    }
+                }
+            }
+
+            leaf active {
+                description
+                    "Indicates that the firmware stored in this slot will be bootet next.";
+                type boolean;
+            }
+
+            leaf path {
+                description
+                    "Path to the firmware file on the in storage associated with this firmware-slot";
+                    type string;
+            }
+        }
+    }
 
     // rpc statements
 
@@ -148,13 +219,21 @@ module opencpe-firmware-mgmt {
                         }
                     }
                 }
+                case ssh-key {
+                    container ssh-key {
+                        presence true;
+                        leaf path {
+                            type string;
+                        }
+                    }
+                }
             }
 
             leaf download-target {
-                if-feature multiple-partitions;
+                if-feature firmware-slots;
 
                 description
-                    "Partition in which the downloaded firmware will be installed.";
+                    "Name of the firmware-slot in which the downloaded firmware will be installed.";
                 type string;
             }
         }
@@ -177,11 +256,11 @@ module opencpe-firmware-mgmt {
         }
     }
 
-    rpc set-active-partition {
+    rpc set-active-firmware-slot {
         description
-            "Sets the partition that that will be active after next boot.";
+            "Sets the firmware-slot that that will be active after next boot.";
         input {
-            leaf partition-name {
+            leaf firmware-slot-name {
                 type string;
                 mandatory true;
             }

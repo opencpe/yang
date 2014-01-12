@@ -3,7 +3,7 @@ opencpe-firmware-mgmt:
 =====================
 supported
 =========
-* multiple-partitions
+* firmware-slots
 
 not supported
 =============
@@ -14,7 +14,7 @@ opencpe-system:
 ==============
 supported
 =========
-* multiple-partitions
+* firmware-slots
 
 not supported
 =============

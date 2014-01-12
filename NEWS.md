@@ -3,6 +3,15 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.3 - 09 Jan 2014
+---------------------------
+
+* Add software 'slots' to abstract how software is stored
+* Add state data to link absolute files and paths to slots
+* Update the file management / writing model to separate actions for downloading writing to slots and activating.
+* Add a ftp-specific firmware-download module as an example for transfer-specific download modules.
+* Move all firmware related augmentations from system into the firmware mgtmt
+
 Version 0.1.2 - 19 Dec 2013
 ---------------------------
 
