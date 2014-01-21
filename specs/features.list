@@ -4,17 +4,11 @@ opencpe-firmware-mgmt:
 supported
 =========
 * firmware-slots
-
-not supported
-=============
-* --
-
-opencpe-system:
-==============
-==============
-supported
-=========
-* firmware-slots
+* firmware-download-ftp
+* firmware-download-http
+* firmware-download-https
+* firmware-download-scp
+* last-boot-status-report
 
 not supported
 =============

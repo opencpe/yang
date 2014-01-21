@@ -3,6 +3,22 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.5 - 20 Jan 2014
+---------------------------
+
+* Move download status to download-job.
+* Add RPC to fetch job status.
+* Add key to firmware-slots.
+* Use leafrefs to refer firmware-slots.
+* Remove system-reset RPC because that is covered by Netconf's delete-config(startup)+system-restart().
+* Re-include download RPCs.";
+
+Version 0.1.4 - 13 Jan 2014
+---------------------------
+
+* Add protocol-specific firmware-download modules
+* Fix deviation description of IPv6/neighbor/state
+
 Version 0.1.3 - 09 Jan 2014
 ---------------------------
 

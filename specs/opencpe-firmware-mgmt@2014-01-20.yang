@@ -6,14 +6,14 @@ module opencpe-firmware-mgmt {
 
     // import statements here: e.g.,
 
-    import ietf-inet-types {
-        prefix "inet";
-        revision-date 2013-07-15;
-    }
-
     import ietf-system {
         prefix "sys";
         revision-date 2013-11-07;
+    }
+
+    import ietf-inet-types {
+        prefix "inet";
+        revision-date 2013-07-15;
     }
 
     organization
@@ -26,6 +26,23 @@ module opencpe-firmware-mgmt {
 
     description
         "This module defines RPCs for the TeraStream home gateway project.";
+
+    revision "2014-01-20" {
+        description
+            "Version 0.1.4
+            Move download status to download-job.
+            Add RPC to fetch job status.
+            Add key to firmware-slots.
+            Use leafrefs to refer firmware-slots.
+            Remove system-reset RPC because that is covered by Netconf's delete-config(startup)+system-restart().
+            Re-include download RPCs.";
+    }
+
+    revision "2014-01-12" {
+        description
+            "Version 0.1.3
+            Move RPC firmware-download to transport-specific modules.";
+    }
 
     revision "2014-01-09" {
         description
@@ -49,9 +66,42 @@ module opencpe-firmware-mgmt {
 
     feature firmware-slots {
         description
-            "Indicates that this device can store more than one firmware version 
+            "Indicates that the device can store more than one firmware version 
             which can be selectively booted.";
     }
+
+    feature last-boot-status-report {
+        if-feature firmware-slots;
+        description
+            "Indicates that the device can report failed attempts to boot a firmware-slot back to the NCS.";
+    }
+
+    feature firmware-download-ftp {
+        description
+            "Indicates that the device can download new firmware using the FTP protocol.";
+    }
+
+    feature firmware-download-http {
+        description
+            "Indicates that the device can download new firmware using the HTTP protocol.";
+    }
+
+    feature firmware-download-https {
+        description
+            "Indicates that the device can download new firmware using the HTTPS protocol.";
+    }
+
+    feature firmware-download-scp {
+        description
+            "Indicates that the device can download new firmware using the SCP protocol.";
+    }
+
+
+
+
+
+
+
 
     // identity statements
 
@@ -59,18 +109,39 @@ module opencpe-firmware-mgmt {
 
     // grouping statements
 
-    grouping fw-status {
-        leaf status {
-            type enumeration {
-                enum planned;
-                enum in-progress;
-                enum done;
+    grouping firmware-job {
+        leaf job-id {
+            type int32;
+        }
+
+        leaf install-target {
+            if-feature firmware-slots;
+
+            description
+                "Name of the firmware-slot in which the downloaded firmware will be installed.";
+            type leafref {
+                path "/sys:system-state/firmware-slot/name";
             }
         }
-        leaf percent {
-            when "ocpe-fw-mgmt:status = 'in-progress'";
-            type int32 {
-                range "0..100";
+
+        container status {
+            description
+                "The job's status.";
+
+            leaf status {
+                type enumeration {
+                    enum planned;
+                    enum in-progress;
+                    enum dl-failed;
+                    enum verification-failed;
+                    enum done;
+                }
+            }
+            leaf percent {
+                when "../status = 'in-progress'";
+                type int32 {
+                    range "0..100";
+                }
             }
         }
     }
@@ -89,7 +160,8 @@ module opencpe-firmware-mgmt {
     }
 
     augment "/sys:system-state" {
-        list firmware-slots {
+        list firmware-slot {
+            key name;
 
             if-feature firmware-slots;
             description
@@ -107,45 +179,25 @@ module opencpe-firmware-mgmt {
                 type string;
             }
 
-            container status {
-                description
-                    "The firmware-slots's firmware's status.";
-
-                leaf status {
-                    type enumeration {
-                        enum planned;
-                        enum in-progress;
-                        enum done;
-                    }
-                }
-                leaf percent {
-                    when "ocpe-fw-mgmt:status = 'in-progress'";
-                    type int32 {
-                        range "0..100";
-                    }
-                }
-            }
-
             leaf active {
                 description
-                    "Indicates that the firmware stored in this slot will be bootet next.";
+                    "Indicates that the firmware stored in this slot will be booted next.";
                 type boolean;
             }
 
             leaf path {
                 description
-                    "Path to the firmware file on the in storage associated with this firmware-slot";
-                    type string;
+                    "Path to the firmware file in the storage associated with this firmware-slot";
+                type inet:uri;
             }
+        }
+
+        list firmware-job {
+            uses firmware-job;
         }
     }
 
     // rpc statements
-
-    rpc system-reset {
-        description
-            "Requests the device to delete the startup configuration and perform a reboot.";
-    }
 
     rpc firmware-download {
         input {
@@ -153,6 +205,7 @@ module opencpe-firmware-mgmt {
                 description
                     "Protocol used for the firmware download";
                 case ftp {
+                    if-feature firmware-download-ftp;
                     container ftp {
                         presence true;
                         leaf address {
@@ -164,6 +217,7 @@ module opencpe-firmware-mgmt {
                     }
                 }
                 case http {
+                    if-feature firmware-download-http;
                     container http {
                         presence true;
                         leaf address {
@@ -173,17 +227,9 @@ module opencpe-firmware-mgmt {
                         }
                     }
                 }
-                case scp {
-                    container scp {
-                        presence true;
-                        leaf address {
-                            description
-                                "Hosname or IP of the download server.";
-                            type inet:uri;
-                        }
-                    }
-                }
+
                 case https {
+                    if-feature firmware-download-https;
                     container https {
                         presence true;
                         leaf address {
@@ -194,6 +240,17 @@ module opencpe-firmware-mgmt {
                     }
                 }
 
+                case scp {
+                    if-feature firmware-download-scp;
+                    container scp {
+                        presence true;
+                        leaf address {
+                            type inet:uri;
+                            description
+                                "Address of the firmware update";
+                        }
+                    }
+                }
             }
 
             choice credentials {
@@ -229,13 +286,34 @@ module opencpe-firmware-mgmt {
                 }
             }
 
-            leaf download-target {
+            leaf address {
+                type inet:uri;
+                mandatory true;
+                description
+                    "Address of the firmware update";
+            }
+
+            leaf install-target {
                 if-feature firmware-slots;
 
                 description
                     "Name of the firmware-slot in which the downloaded firmware will be installed.";
-                type string;
+                type leafref {
+                    path "/sys:system-state/firmware-slot/name";
+                }
             }
+
+            leaf timeframe {
+                description
+                    "Time for which the firmware-image will be available for download.
+                    The device will start the download at a random point during this timeframe.
+                    If value 0 (zero) is given, the file is assumed to be available infinitely.";
+                type int32;
+                units seconds;
+                default 0;
+                mandatory false;
+            }
+
         }
         output {
             leaf job-id {
@@ -244,10 +322,9 @@ module opencpe-firmware-mgmt {
             }
         }
     }
-
     rpc firmware-commit {
         description
-            "Install a previously donwloaded firmware.";
+            "Install a previously downloaded firmware.";
         input {
             leaf job-id {
                 type int32;
@@ -256,13 +333,30 @@ module opencpe-firmware-mgmt {
         }
     }
 
-    rpc set-active-firmware-slot {
+    rpc get-job-status {
         description
-            "Sets the firmware-slot that that will be active after next boot.";
+            "Queries the current status of a download-job.";
         input {
-            leaf firmware-slot-name {
-                type string;
+            leaf job-id {
+                type  int32;
                 mandatory true;
+            }
+        }
+        output {
+            uses firmware-job;
+        }
+    }
+
+    rpc set-bootorder {
+        if-feature firmware-slots;
+
+        description
+            "Sets the order in which the bootloader tries to boot available firmware-images.";
+        input {
+            leaf-list bootorder {
+                type leafref {
+                    path "/sys:system-state/firmware-slot/name";
+                }
             }
         }
     }

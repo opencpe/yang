@@ -1,7 +1,7 @@
 PYANG ?= pyang
 PLANTUML ?= plantuml
 
-all: prepare_dirs opencpe.svg opencpe-firmware-mgmt.svg
+all: clean prepare_dirs opencpe-system.svg opencpe-firmware-mgmt.svg
 
 prepare_dirs:
 	mkdir -p img/ uml/
@@ -10,7 +10,7 @@ prepare_dirs:
 	$(PLANTUML) -tsvg -o ../ uml/$<
 	mv img/$**.png img/$*.svg
 
-opencpe.uml: specs/opencpe@2013-12-19.yang
+opencpe-system.uml: specs/opencpe-system@2014-01-09.yang
 	$(PYANG) \
     --uml-description \
     --uml-footer='' \
@@ -19,20 +19,20 @@ opencpe.uml: specs/opencpe@2013-12-19.yang
     specs/ietf-interfaces@2013-07-04.yang \
     specs/ietf-ip@2013-10-18.yang \
     specs/ietf-system@2013-11-07.yang \
-    specs/opencpe-deviations@2013-12-19.yang \
+    specs/opencpe-deviations@2014-01-12.yang \
     specs/opencpe-system@2014-01-09.yang \
     --features ietf-system:authentication,local-users,timezone-location,crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp \
     --features opencpe-firmware-mgmt:firmware-slots \
-    --deviation-module specs/opencpe-deviations@2013-12-19.yang \
+    --deviation-module specs/opencpe-deviations@2014-01-12.yang \
     -o uml/$@
 
-opencpe-firmware-mgmt.uml: specs/opencpe-firmware-mgmt@2014-01-09.yang
+opencpe-firmware-mgmt.uml: specs/opencpe-firmware-mgmt@2014-01-20.yang
 	$(PYANG) \
     --uml-description \
     --uml-footer='' \
     -f uml \
     -p specs/ $< \
-    specs/opencpe-firmware-download-ftp@2014-01-09.yang \
+    --features opencpe-firmware-mgmt:firmware-slots \
     -o uml/$@
 
 %.uml: specs/%.yang
