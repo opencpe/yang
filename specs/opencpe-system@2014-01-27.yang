@@ -22,6 +22,12 @@ module opencpe-system {
     description
         "This module defines a home gateway for the TeraStream project.";
 
+    revision "2014-01-27" {
+        description
+            "Version 0.1.3
+            Add feature last-boot-status-report from opencpe-firmware-management.";
+    }
+
     revision "2014-01-09" {
         description
             "Version 0.1.2
@@ -43,6 +49,18 @@ module opencpe-system {
     // deviate statements
 
     // feature statements
+
+    feature firmware-slots {
+        description
+            "Indicates that the device can store more than one firmware version
+            which can be selectively booted.";
+    }
+
+    feature last-boot-status-report {
+        if-feature firmware-slots;
+        description
+            "Indicates that the device can report failed attempts to boot a firmware-slot back to the NCS.";
+    }
 
     // identity statements
 

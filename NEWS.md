@@ -3,6 +3,16 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.6 - 27 Jan 2014
+---------------------------
+
+* Move last-boot-status-report feature to opencpe-system
+* Add leafs to firmware-download RPC
+** retry-count
+** retry-interval
+** retry-interval-increment
+* Make it possible to return a string as status for firmware-download so OS messages can be returned
+
 Version 0.1.5 - 20 Jan 2014
 ---------------------------
 

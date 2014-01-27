@@ -14,6 +14,18 @@ not supported
 =============
 * --
 
+opencpe-system:
+=====================
+=====================
+suported
+========
+* firmware-slots
+* last-boot-status-report
+
+not supported
+=============
+* --
+
 ietf-system@2013-11-07:
 ======================
 ======================

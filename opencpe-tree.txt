@@ -1,10 +1,11 @@
-﻿pyang ietf-system@2013-11-07.yang ietf-interfaces@2013-07-04.yang \
-      ietf-ip@2013-10-18.yang opencpe-system@2014-01-09.yang \
-      opencpe-firmware-mgmt@2014-01-20.yang \
+pyang ietf-system@2013-11-07.yang ietf-interfaces@2013-07-04.yang \
+      ietf-ip@2013-10-18.yang opencpe-system@2014-01-27.yang \
+      opencpe-firmware-mgmt@2014-01-27.yang \
       --features ietf-system:authentication,local-users,timezone-location,\
-        crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp \
+      crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp \
       --features opencpe-firmware-mgmt:firmware-slots,firmware-download-ftp,\
-        firmware-download-http,firmware-download-https,firmware-download-scp \
+      firmware-download-http,firmware-download-https,firmware-download-scp \
+      --features opencpe-system:firmware-slots,last-boot-status-report \
       --deviation-module opencpe-deviations@2014-01-12.yang \
       -f tree
 
@@ -67,8 +68,8 @@ module: ietf-system
          +--ro ocpe-fw-mgmt:job-id?           int32
          +--ro ocpe-fw-mgmt:install-target?   leafref {firmware-slots}?
          +--ro ocpe-fw-mgmt:status
-            +--ro ocpe-fw-mgmt:status?    enumeration
-            +--ro ocpe-fw-mgmt:percent?   int32
+            +--ro ocpe-fw-mgmt:status?     union
+            +--ro ocpe-fw-mgmt:progress?   percent
 rpcs:
    +---x set-current-datetime    
    |  +--ro input     
@@ -196,9 +197,12 @@ rpcs:
    |  |  |  +--:(ssh-key)
    |  |  |     +--ro ssh-key!
    |  |  |        +--ro path?   string
-   |  |  +--ro address           inet:uri
-   |  |  +--ro install-target?   leafref {firmware-slots}?
-   |  |  +--ro timeframe?        int32
+   |  |  +--ro address                     inet:uri
+   |  |  +--ro install-target?             leafref {firmware-slots}?
+   |  |  +--ro timeframe?                  int32
+   |  |  +--ro retry-count?                uint8
+   |  |  +--ro retry-interval?             uint16
+   |  |  +--ro retry-interval-increment?   percent
    |  +--ro output    
    |     +--ro job-id    int32
    +---x firmware-commit      
@@ -211,8 +215,8 @@ rpcs:
    |     +--ro job-id?           int32
    |     +--ro install-target?   leafref {firmware-slots}?
    |     +--ro status
-   |        +--ro status?    enumeration
-   |        +--ro percent?   int32
+   |        +--ro status?     union
+   |        +--ro progress?   percent
    +---x set-bootorder         {firmware-slots}?
       +--ro input     
          +--ro bootorder*   leafref

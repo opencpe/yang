@@ -27,6 +27,12 @@ module opencpe-firmware-mgmt {
     description
         "This module defines RPCs for the TeraStream home gateway project.";
 
+    revision "2014-01-27" {
+        description
+            "Version 0.1.5
+            Move boot status to system module.";
+    }
+
     revision "2014-01-20" {
         description
             "Version 0.1.4
@@ -70,11 +76,6 @@ module opencpe-firmware-mgmt {
             which can be selectively booted.";
     }
 
-    feature last-boot-status-report {
-        if-feature firmware-slots;
-        description
-            "Indicates that the device can report failed attempts to boot a firmware-slot back to the NCS.";
-    }
 
     feature firmware-download-ftp {
         description
@@ -96,16 +97,17 @@ module opencpe-firmware-mgmt {
             "Indicates that the device can download new firmware using the SCP protocol.";
     }
 
-
-
-
-
-
-
-
     // identity statements
 
     // typedef statements
+
+    typedef percent {
+        type uint8 {
+            range "0 .. 100";
+        }
+        description
+            "Percentage";
+    }
 
     // grouping statements
 
@@ -129,19 +131,20 @@ module opencpe-firmware-mgmt {
                 "The job's status.";
 
             leaf status {
-                type enumeration {
-                    enum planned;
-                    enum in-progress;
-                    enum dl-failed;
-                    enum verification-failed;
-                    enum done;
+                type union {
+                    type enumeration {
+                        enum planned;
+                        enum in-progress;
+                        enum dl-failed;
+                        enum verification-failed;
+                        enum done;
+                    }
+                    type string;
                 }
             }
-            leaf percent {
+            leaf progress {
                 when "../status = 'in-progress'";
-                type int32 {
-                    range "0..100";
-                }
+                type percent;
             }
         }
     }
@@ -311,6 +314,30 @@ module opencpe-firmware-mgmt {
                 type int32;
                 units seconds;
                 default 0;
+                mandatory false;
+            }
+
+            leaf retry-count {
+                description
+                    "Number of times a failed download is retried.";
+                type uint8;
+                default 3;
+                mandatory false;
+            }
+            leaf retry-interval {
+                description
+                    "Number of seconds to wait before a retry.";
+                type uint16;
+                default 300;
+                units seconds;
+                mandatory false;
+            }
+            leaf retry-interval-increment {
+                description
+                    "Maximum percentage to alter the retry-interval.";
+                type percent;
+                default 20;
+                units percent;
                 mandatory false;
             }
 
