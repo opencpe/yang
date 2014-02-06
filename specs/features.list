@@ -19,7 +19,6 @@ opencpe-system:
 =====================
 suported
 ========
-* firmware-slots
 * last-boot-status-report
 
 not supported

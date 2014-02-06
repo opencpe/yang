@@ -114,6 +114,7 @@ module opencpe-firmware-mgmt {
     grouping firmware-job {
         leaf job-id {
             type int32;
+            mandatory true;
         }
 
         leaf install-target {
@@ -124,6 +125,7 @@ module opencpe-firmware-mgmt {
             type leafref {
                 path "/sys:system-state/firmware-slot/name";
             }
+            mandatory true;
         }
 
         container status {
@@ -131,24 +133,30 @@ module opencpe-firmware-mgmt {
                 "The job's status.";
 
             leaf status {
-                type union {
-                    type enumeration {
-                        enum planned;
-                        enum in-progress;
-                        enum dl-failed;
-                        enum verification-failed;
-                        enum done;
-                    }
-                    type string;
+                type enumeration {
+                    enum planned;
+                    enum in-progress;
+                    enum dl-failed;
+                    enum verification-failed;
+                    enum done;
                 }
+                mandatory true;
             }
+
+            leaf status-msg {
+                description
+                    "Additional status information gathered from OS.";
+                type string;
+                mandatory false;
+            }
+
             leaf progress {
                 when "../status = 'in-progress'";
                 type percent;
+                mandatory true;
             }
         }
     }
-
 
     // data definition statements
 
@@ -225,6 +233,7 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf address {
                             type inet:uri;
+                            mandatory true;
                             description
                                 "Address of the firmware update";
                         }
@@ -237,6 +246,7 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf address {
                             type inet:uri;
+                            mandatory true;
                             description
                                 "Address of the firmware update";
                         }
@@ -249,6 +259,7 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf address {
                             type inet:uri;
+                            mandatory true;
                             description
                                 "Address of the firmware update";
                         }
@@ -265,9 +276,11 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf username {
                             type string;
+                            mandatory true;
                         }
                         leaf password {
                             type string;
+                            mandatory true;
                         }
                     }
                 }
@@ -276,6 +289,7 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf path {
                             type string;
+                            mandatory true;
                         }
                     }
                 }
@@ -284,16 +298,10 @@ module opencpe-firmware-mgmt {
                         presence true;
                         leaf path {
                             type string;
+                            mandatory true;
                         }
                     }
                 }
-            }
-
-            leaf address {
-                type inet:uri;
-                mandatory true;
-                description
-                    "Address of the firmware update";
             }
 
             leaf install-target {
@@ -304,6 +312,7 @@ module opencpe-firmware-mgmt {
                 type leafref {
                     path "/sys:system-state/firmware-slot/name";
                 }
+                mandatory true;
             }
 
             leaf timeframe {
@@ -327,7 +336,7 @@ module opencpe-firmware-mgmt {
             leaf retry-interval {
                 description
                     "Number of seconds to wait before a retry.";
-                type uint16;
+                type uint32;
                 default 300;
                 units seconds;
                 mandatory false;
@@ -365,7 +374,7 @@ module opencpe-firmware-mgmt {
             "Queries the current status of a download-job.";
         input {
             leaf job-id {
-                type  int32;
+                type int32;
                 mandatory true;
             }
         }

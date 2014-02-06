@@ -23,7 +23,6 @@ opencpe-system.uml: specs/opencpe-system@2014-01-27.yang
     specs/opencpe-system@2014-01-27.yang \
     --features ietf-system:authentication,local-users,timezone-location,crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp \
     --features opencpe-firmware-mgmt:firmware-slots \
-    --features opencpe-system:firmware-slots \
     --deviation-module specs/opencpe-deviations@2014-01-12.yang \
     -o uml/$@
 

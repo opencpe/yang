@@ -11,6 +11,11 @@ module opencpe-system {
         revision-date 2013-11-07;
     }
 
+    import opencpe-firmware-mgmt {
+        prefix "ocpe-fw-mgmt";
+        revision-date 2014-01-27;
+    }
+
     organization
         "Travelping GmbH";
 
@@ -50,14 +55,8 @@ module opencpe-system {
 
     // feature statements
 
-    feature firmware-slots {
-        description
-            "Indicates that the device can store more than one firmware version
-            which can be selectively booted.";
-    }
-
     feature last-boot-status-report {
-        if-feature firmware-slots;
+        if-feature ocpe-fw-mgmt:firmware-slots;
         description
             "Indicates that the device can report failed attempts to boot a firmware-slot back to the NCS.";
     }

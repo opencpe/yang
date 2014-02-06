@@ -1,12 +1,12 @@
-pyang ietf-system@2013-11-07.yang ietf-interfaces@2013-07-04.yang \
-      ietf-ip@2013-10-18.yang opencpe-system@2014-01-27.yang \
-      opencpe-firmware-mgmt@2014-01-27.yang \
+pyang ietf-system@2013-11-07.yang ietf-interfaces@2013-07-04.yang\
+      ietf-ip@2013-10-18.yang opencpe-system@2014-01-27.yang\
+      opencpe-firmware-mgmt@2014-01-27.yang\
       --features ietf-system:authentication,local-users,timezone-location,\
-      crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp \
+crypt-hash-md5,crypt-hash-sha-256,crypt-hash-sha-512,ntp\
       --features opencpe-firmware-mgmt:firmware-slots,firmware-download-ftp,\
-      firmware-download-http,firmware-download-https,firmware-download-scp \
-      --features opencpe-system:firmware-slots,last-boot-status-report \
-      --deviation-module opencpe-deviations@2014-01-12.yang \
+firmware-download-http,firmware-download-https,firmware-download-scp\
+      --features last-boot-status-report\
+      --deviation-module opencpe-deviations@2014-01-12.yang\
       -f tree
 
 module: ietf-system
@@ -54,8 +54,8 @@ module: ietf-system
       |  +--ro os-release?                      string
       |  +--ro os-version?                      string
       |  +--ro machine?                         string
-      |  +--ro ocpes:serial-number?             string
       |  +--ro ocpe-fw-mgmt:firmware-version?   string
+      |  +--ro ocpes:serial-number?             string
       +--ro clock
       |  +--ro current-datetime?   yang:date-and-time
       |  +--ro boot-datetime?      yang:date-and-time
@@ -65,11 +65,12 @@ module: ietf-system
       |  +--ro ocpe-fw-mgmt:active?    boolean
       |  +--ro ocpe-fw-mgmt:path?      inet:uri
       +--ro ocpe-fw-mgmt:firmware-job*
-         +--ro ocpe-fw-mgmt:job-id?           int32
-         +--ro ocpe-fw-mgmt:install-target?   leafref {firmware-slots}?
+         +--ro ocpe-fw-mgmt:job-id            int32
+         +--ro ocpe-fw-mgmt:install-target    leafref {firmware-slots}?
          +--ro ocpe-fw-mgmt:status
-            +--ro ocpe-fw-mgmt:status?     union
-            +--ro ocpe-fw-mgmt:progress?   percent
+            +--ro ocpe-fw-mgmt:status        enumeration
+            +--ro ocpe-fw-mgmt:status-msg?   string
+            +--ro ocpe-fw-mgmt:progress      percent
 rpcs:
    +---x set-current-datetime    
    |  +--ro input     
@@ -179,29 +180,28 @@ rpcs:
    |  |  |  |     +--ro address    inet:uri
    |  |  |  +--:(http) {firmware-download-http}?
    |  |  |  |  +--ro http!
-   |  |  |  |     +--ro address?   inet:uri
+   |  |  |  |     +--ro address    inet:uri
    |  |  |  +--:(https) {firmware-download-https}?
    |  |  |  |  +--ro https!
-   |  |  |  |     +--ro address?   inet:uri
+   |  |  |  |     +--ro address    inet:uri
    |  |  |  +--:(scp) {firmware-download-scp}?
    |  |  |     +--ro scp!
-   |  |  |        +--ro address?   inet:uri
+   |  |  |        +--ro address    inet:uri
    |  |  +--ro (credentials)?
    |  |  |  +--:(user-pass)
    |  |  |  |  +--ro user-pass!
-   |  |  |  |     +--ro username?   string
-   |  |  |  |     +--ro password?   string
+   |  |  |  |     +--ro username    string
+   |  |  |  |     +--ro password    string
    |  |  |  +--:(certificate)
    |  |  |  |  +--ro certificate!
-   |  |  |  |     +--ro path?   string
+   |  |  |  |     +--ro path    string
    |  |  |  +--:(ssh-key)
    |  |  |     +--ro ssh-key!
-   |  |  |        +--ro path?   string
-   |  |  +--ro address                     inet:uri
-   |  |  +--ro install-target?             leafref {firmware-slots}?
+   |  |  |        +--ro path    string
+   |  |  +--ro install-target              leafref {firmware-slots}?
    |  |  +--ro timeframe?                  int32
    |  |  +--ro retry-count?                uint8
-   |  |  +--ro retry-interval?             uint16
+   |  |  +--ro retry-interval?             uint32
    |  |  +--ro retry-interval-increment?   percent
    |  +--ro output    
    |     +--ro job-id    int32
@@ -212,11 +212,12 @@ rpcs:
    |  +--ro input     
    |  |  +--ro job-id    int32
    |  +--ro output    
-   |     +--ro job-id?           int32
-   |     +--ro install-target?   leafref {firmware-slots}?
+   |     +--ro job-id            int32
+   |     +--ro install-target    leafref {firmware-slots}?
    |     +--ro status
-   |        +--ro status?     union
-   |        +--ro progress?   percent
+   |        +--ro status        enumeration
+   |        +--ro status-msg?   string
+   |        +--ro progress      percent
    +---x set-bootorder         {firmware-slots}?
       +--ro input     
          +--ro bootorder*   leafref

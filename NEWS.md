@@ -3,6 +3,18 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.8 - 04 Feb 2014
+---------------------------
+
+* remove duplicate feature declaration for firmware-slots
+
+Version 0.1.7 - 27 Jan 2014
+---------------------------
+
+* make the string in status an additional optional leaf
+* change type of retry-interval to int32
+* make some more nodes mandatory
+
 Version 0.1.6 - 27 Jan 2014
 ---------------------------
 
