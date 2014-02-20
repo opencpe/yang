@@ -26,7 +26,7 @@ opencpe-system.uml: specs/opencpe-system@2014-01-27.yang
     --deviation-module specs/opencpe-deviations@2014-01-12.yang \
     -o uml/$@
 
-opencpe-firmware-mgmt.uml: specs/opencpe-firmware-mgmt@2014-01-27.yang
+opencpe-firmware-mgmt.uml: specs/opencpe-firmware-mgmt@2014-02-06.yang
 	$(PYANG) \
     --uml-description \
     --uml-footer='' \

@@ -13,7 +13,7 @@ module opencpe-system {
 
     import opencpe-firmware-mgmt {
         prefix "ocpe-fw-mgmt";
-        revision-date 2014-01-27;
+        revision-date 2014-02-06;
     }
 
     organization

@@ -27,6 +27,13 @@ module opencpe-firmware-mgmt {
     description
         "This module defines RPCs for the TeraStream home gateway project.";
 
+    revision "2014-02-06" {
+        description
+            "Version 0.1.5
+            Remove RPC get-job-status.
+            Remove transport choice, use URI with username instead.";
+    }
+
     revision "2014-01-27" {
         description
             "Version 0.1.5
@@ -212,72 +219,26 @@ module opencpe-firmware-mgmt {
 
     rpc firmware-download {
         input {
-            choice transport {
+            leaf address {
+                type inet:uri;
+                mandatory true;
                 description
-                    "Protocol used for the firmware download";
-                case ftp {
-                    if-feature firmware-download-ftp;
-                    container ftp {
-                        presence true;
-                        leaf address {
-                            type inet:uri;
-                            mandatory true;
-                            description 
-                                "Address of the firmware update";
-                        }
-                    }
-                }
-                case http {
-                    if-feature firmware-download-http;
-                    container http {
-                        presence true;
-                        leaf address {
-                            type inet:uri;
-                            mandatory true;
-                            description
-                                "Address of the firmware update";
-                        }
-                    }
-                }
-
-                case https {
-                    if-feature firmware-download-https;
-                    container https {
-                        presence true;
-                        leaf address {
-                            type inet:uri;
-                            mandatory true;
-                            description
-                                "Address of the firmware update";
-                        }
-                    }
-                }
-
-                case scp {
-                    if-feature firmware-download-scp;
-                    container scp {
-                        presence true;
-                        leaf address {
-                            type inet:uri;
-                            mandatory true;
-                            description
-                                "Address of the firmware update";
-                        }
-                    }
-                }
+                    "URI of the firmware image including username.
+                      Depending on the supported protocols,
+                      the following formats are possible:
+                      http://<username>@<host>[:<port>]
+                      https://<username>@<host>[:<port>]
+                      ftp://<username>@<host>[:<port>]
+                      scp://<username>@<host>[:<port>]";
             }
 
             choice credentials {
                 description
                     "Type of authentication to use for firmware downloads.";
 
-                case user-pass {
-                    container user-pass {
+                case password {
+                    container password {
                         presence true;
-                        leaf username {
-                            type string;
-                            mandatory true;
-                        }
                         leaf password {
                             type string;
                             mandatory true;
@@ -366,20 +327,6 @@ module opencpe-firmware-mgmt {
                 type int32;
                 mandatory true;
             }
-        }
-    }
-
-    rpc get-job-status {
-        description
-            "Queries the current status of a download-job.";
-        input {
-            leaf job-id {
-                type int32;
-                mandatory true;
-            }
-        }
-        output {
-            uses firmware-job;
         }
     }
 

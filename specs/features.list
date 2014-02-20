@@ -8,7 +8,6 @@ supported
 * firmware-download-http
 * firmware-download-https
 * firmware-download-scp
-* last-boot-status-report
 
 not supported
 =============

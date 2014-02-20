@@ -3,6 +3,13 @@ homegateway
 
 Collection of project documentation and Yang specs for homegateway.
 
+Version 0.1.9 - 06 Feb 2014
+---------------------------
+
+* opencpe-firmware-mgmt
+** remove get-job-status RPC
+** remove transport choice in download RPC, use URI with username instead
+
 Version 0.1.8 - 04 Feb 2014
 ---------------------------
 
