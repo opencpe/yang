@@ -1,7 +1,7 @@
-homegateway
+OpenCPE
 ===========
 
-Collection of project documentation and Yang specs for homegateway.
+Collection of project documentation and YANG specs for OpenCPE.
 
 Version 0.1.9 - 06 Feb 2014
 ---------------------------
