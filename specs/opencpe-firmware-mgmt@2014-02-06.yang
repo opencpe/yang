@@ -17,12 +17,12 @@ module opencpe-firmware-mgmt {
     }
 
     organization
-        "Travelping GmbH";
+        "Deutsche Telekom AG";
 
     contact
-        "Röntgenstraße 13
-        39108 Magdeburg
-        Editor: Helge Sychla <hs@travelping.com>";
+        "Landgrabenweg 151
+        53227 Bonn, Germany
+        Editor: Ian Farrer <ian.farrer@telekom.de>";
 
     description
         "This module defines RPCs for the TeraStream home gateway project.";
